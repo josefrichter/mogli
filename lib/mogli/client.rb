@@ -41,6 +41,24 @@ module Mogli
       end
       new(hash["access_token"],hash["expires"].to_s.to_i)
     end
+    
+    # based on http://developers.facebook.com/docs/authentication/#client_credentials
+    # access token for your app. for tasks not requiring any current user (e.g. stream_publish)
+    # usage:
+    # authenticator = Mogli::Authenticator.new(app_id,secret,"") # yep, no callback
+    # client = Mogli::Client.create_from_authenticator(authenticator) # no code needed
+    # user = Mogli::User.find(id,client) # our app will be the client now
+    # user.feed_create(Mogli::Post.new(post_params)) # usual stuff
+    def self.create_from_authenticator(authenticator)
+      debugger
+      post_data = get(authenticator.access_application_token_url)
+      parts = post_data.split("&")
+      hash = {}
+      parts.each do |p| (k,v) = p.split("=")
+        hash[k]=v
+      end
+      new(hash["access_token"],hash["expires"].to_s.to_i)
+    end
 
     def self.create_from_session_key(session_key, client_id, secret)
       authenticator = Mogli::Authenticator.new(client_id, secret, nil)

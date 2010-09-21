@@ -19,6 +19,12 @@ module Mogli
     def access_token_url(code)
       "https://graph.facebook.com/oauth/access_token?client_id=#{client_id}&redirect_uri=#{CGI.escape(callback_url)}&client_secret=#{secret}&code=#{CGI.escape(code)}"
     end
+    
+    # based on http://developers.facebook.com/docs/authentication/#client_credentials
+    # access token for your app. for tasks not requiring any current user (e.g. stream_publish)
+    def access_application_token_url
+      "https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id=#{client_id}&client_secret=#{secret}"
+    end
 
     def get_access_token_for_session_key(session_keys)
       keystr = session_keys.is_a?(Array) ?
